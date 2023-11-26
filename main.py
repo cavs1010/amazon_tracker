@@ -1,16 +1,15 @@
-# This is a sample Python script.
+import requests
+from bs4 import BeautifulSoup
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+# Retrieving the website
+#URL = "https://www.amazon.com.au/dp/B09R51WRV4"
+URL = "https://www.amazon.com.au/dp/B08YY4ZPNB"
+response = requests.get(URL)
+if response.status_code != 200:
+    raise Exception("Failed to retrieve data from the website")
 
+# Fetch the data using beautiful soup
+soup =BeautifulSoup(response.text, 'html.parser')
+price_product = float(soup.find(name="span", class_="a-offscreen").getText().replace("$",""))
+print(price_product)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
