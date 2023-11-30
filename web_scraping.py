@@ -9,9 +9,8 @@ class AmazonProductScraper:
                url (str): URL of the Amazon product page to scrape.
         """
         self.url_product = url
-        self.price_product = self.fetch_product_data(self.url_product)
 
-    def fetch_product_data(self, url):
+    def fetch_product_price(self):
         """Fetch and return the product price from the given URL.
 
         Args:
@@ -31,7 +30,7 @@ class AmazonProductScraper:
 
         # Perform a GET request with the specified headers
         try:
-            response = requests.get(url, headers=headers)
+            response = requests.get(self.url_product, headers=headers)
             # Raises an HTTPError for unsuccessful status codes
             response.raise_for_status()
         except requests.RequestException as e:
