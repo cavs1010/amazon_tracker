@@ -1,25 +1,23 @@
-import json
+from web_scraping import AmazonProductScraper
+from g_sheets_auth import GoogleSheetsAuth
 import os
-from google.oauth2.service_account import Credentials
-import requests
-from bs4 import BeautifulSoup
-
-#TODO Create google sheets
-#TODO Create google sheets connection
-
-# Retrieving the website
-#URL = "https://www.amazon.com.au/dp/B09R51WRV4"
-URL = "https://www.amazon.com.au/dp/B08YY4ZPNB"
-response = requests.get(URL)
-if response.status_code != 200:
-    raise Exception("Failed to retrieve data from the website")
-
-# Fetch the data using beautiful soup
-soup =BeautifulSoup(response.text, 'html.parser')
-price_product = float(soup.find(name="span", class_="a-offscreen").getText().replace("$",""))
 
 
-# Load credentials from the environmental variable
-creds_json = json.loads(os.environ['GOOGLE_APPLICATION_CREDENTIALS_JSON'])
-creds = Credentials.from_service_account_info(creds_json)
+
+robot_vacuum = AmazonProductScraper(url="https://www.amazon.com.au/dp/B08YY4ZPNB")
+
+print(robot_vacuum.price_product)
+
+google_sheets_auth = GoogleSheetsAuth()
+
+client = google_sheets_auth.get_client()
+
+spreed_sheet_key = os.environ['SPREED_SHEET_KEY']
+
+spreadsheet = client.open_by_key(spreed_sheet_key)
+worksheet = spreadsheet.get_worksheet(0)
+print(worksheet.acell('A1').value)
+
+
+
 
