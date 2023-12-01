@@ -14,6 +14,9 @@ with open('raw_links.txt') as file:
 for link in links:
    product = Product(link)
    print(product.product_price)
+#TODO 1.1 Object is new -> I am going to add it to the spreadsheet based on the website that I found the product
+#TODO 1.2 The object that has been added to the spreadsheets is deleted from the .txt file.
+#TODO
 
 # robot_vacuum = AmazonProductScraper(url="https://www.amazon.com.au/dp/B08YY4ZPNB")
 #
