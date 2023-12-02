@@ -55,7 +55,12 @@ def add_new_product_in_spreedsheet(worksheet, product, current_datetime):
                product.product_price, product.product_price,
                current_datetime.strftime('%d/%m/%Y')]
    worksheet.update( values=[row_data], range_name=f'A{last_empty_row}:F{last_empty_row}')
-   print('Product has been added to the spreadsheet!')
+   print(f"Product{product.product_name} from {product.website} has been added into the google sheets.")
+
+def product_already_exists(worksheet, product):
+   id_list = worksheet.col_values(1)
+   if product.product_id in id_list:
+      return True
 
 def main():
    """
@@ -72,11 +77,17 @@ def main():
    links = read_product_links('raw_links.txt')
    new_products_to_add = [Product(link) for link in links]
 
+   # TODO I Might need to iterate over all the worksheets to get the ids of the products. This list is used to get get the ids of the products and check duplicates
+   id_list_cache = spreadsheet_price_tracker.worksheet("www.amazon.com.au").col_values(1)
+
    # Add each new product to the spreadsheet
    for product in new_products_to_add:
       try:
-         worksheet = spreadsheet_price_tracker.worksheet(product.website)
-         add_new_product_in_spreedsheet(worksheet, product, current_datetime)
+         # Check that it has not previously added
+         if not product.product_id in id_list_cache:
+            worksheet = spreadsheet_price_tracker.worksheet(product.website)
+            add_new_product_in_spreedsheet(worksheet, product, current_datetime)
+
       except Exception as e:
          print(f"Failed to add product {product.product_name}: {e}")
 
