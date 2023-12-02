@@ -91,6 +91,10 @@ def main():
       except Exception as e:
          print(f"Failed to add product {product.product_name}: {e}")
 
+   # Clear the file with the links after adding the products
+   # with open('raw_links.txt', 'w'):
+   #    pass
+
 if __name__ == "__main__":
     main()
 
