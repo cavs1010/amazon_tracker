@@ -1,4 +1,6 @@
+import re
 from web_scraping import AmazonProductScraper
+
 
 class Product:
     def __init__(self, full_url):
@@ -19,6 +21,7 @@ class Product:
         # Split the URL once and store the parts for further processing
         url_parts = full_url.split("/")
 
+
         # Basic validation for URL format
         if len(url_parts) < 6:
             raise ValueError("URL format is not as expected.")
@@ -26,7 +29,7 @@ class Product:
         # Extract the website domain, product name, and product ID from the URL
         self.website = url_parts[2]
         self.product_name = url_parts[3]
-        self.product_id = url_parts[5]
+        self.product_id = re.search(r'\/B\w{9}', full_url).group()[1:]
 
         # Construct a short link directly to the product page
         self.short_link = f"https://www.amazon.com.au/dp/{self.product_id}"
