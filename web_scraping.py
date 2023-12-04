@@ -29,6 +29,15 @@ class AmazonProductScraper:
         soup = BeautifulSoup(response.text, 'html.parser')
         return soup
 
+    def fetch_product_name(self):
+        name_element = self.soup.find(name="span", id="productTitle").getText().strip()
+        if name_element:
+            return name_element
+        else:
+            # Raise an exception if the price element is not found in the HTML
+            raise Exception(f"Name element with link {self.url} not found")
+
+
     def fetch_product_price(self):
         """Fetch and return the product price from the given URL.
 
@@ -51,8 +60,6 @@ class AmazonProductScraper:
             try:
                 # Extract the text from the price element and convert it to a float
                 full_price = price_whole+price_fraction
-                name_element = self.soup.find(name="span", id="productTitle")
-                print(name_element)
                 return float(full_price)
             except ValueError:
                 # Handle cases where the text cannot be converted to float
