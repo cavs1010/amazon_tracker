@@ -53,3 +53,4 @@ class AmazonProductScraper:
             # Raise an exception if the price element is not found in the HTML
             raise Exception("Price element not found")
 
+
