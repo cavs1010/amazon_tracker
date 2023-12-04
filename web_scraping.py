@@ -30,6 +30,16 @@ class AmazonProductScraper:
         return soup
 
     def fetch_product_name(self):
+        """
+           Fetches and returns the product price from an Amazon product page.
+
+           Returns:
+               float: The product price.
+
+           Raises:
+               Exception: If the webpage request fails, or if the price element is not found or cannot be
+                          converted to a float.
+           """
         name_element = self.soup.find(name="span", id="productTitle").getText().strip()
         if name_element:
             return name_element
@@ -50,8 +60,6 @@ class AmazonProductScraper:
         Raises:
             Exception: If the request fails, the price element is not found, or price conversion fails.
         """
-
-
 
         # Find the price element using its HTML class
         price_whole = self.soup.find(name="span", class_="a-price-whole").getText()
