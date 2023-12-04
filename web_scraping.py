@@ -41,16 +41,19 @@ class AmazonProductScraper:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Find the price element using its HTML class
-        price_element = soup.find(name="span", class_="a-offscreen")
-        if price_element:
+        price_whole = soup.find(name="span", class_="a-price-whole").getText()
+        price_fraction = soup.find(name="span", class_="a-price-fraction").getText()
+        if price_whole and price_fraction:
             try:
                 # Extract the text from the price element and convert it to a float
-                return float(price_element.getText().replace("$", ""))
+                full_price = price_whole+price_fraction
+                name_element = soup.find(name="span", id="productTitle")
+                print(name_element)
+                return float(full_price)
             except ValueError:
                 # Handle cases where the text cannot be converted to float
                 raise Exception("Failed to convert price to float")
         else:
             # Raise an exception if the price element is not found in the HTML
             raise Exception("Price element not found")
-
 
