@@ -32,7 +32,7 @@ class Product:
         # Regula Expression to find the id of the product
         match = re.search(r'\/B\w{9}', full_url)
         if match:
-            self.product_id = match.group[1:]
+            self.product_id = match.group()[1:]
         else:
             raise ValueError("Product ID not found in the URL")
 
