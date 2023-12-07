@@ -2,6 +2,7 @@ from product import Product
 from g_sheets_auth import GoogleSheetsAuth
 import datetime as dt
 import os
+from helper import get_id_from_whole_url_amazon
 
 #FIRST CASE: product is not in google sheets
 # 1. Create a class product that will be placed in the google sheets
@@ -65,6 +66,22 @@ def product_already_exists(worksheet, product):
 def main():
    """
    Main function to execute the script.
+
+   This function handles the process of reading product links from a file, checking against
+   a Google Sheets document to avoid duplicates, and adding new product information to the sheet.
+   It establishes a connection to Google Sheets, reads product links, processes each product,
+   and updates the spreadsheet with new products. After processing, the file containing the
+   product links is cleared.
+
+   Steps:
+   1. Set up the Google Sheets client and open the spreadsheet.
+   2. Read product links from 'raw_links.txt'.
+   3. Cache the existing product IDs from the spreadsheet.
+   4. Process each product link and add new products to the spreadsheet.
+   5. Clear 'raw_links.txt' after processing.
+
+   Raises:
+       Exception: If any error occurs during the processing of products or updating the spreadsheet.
    """
    # Set up the Google Sheets client
    google_sheets_auth = GoogleSheetsAuth()
@@ -77,23 +94,24 @@ def main():
    links = read_product_links('raw_links.txt')
    new_products_to_add = [Product(link) for link in links]
 
-   # TODO I Might need to iterate over all the worksheets to get the ids of the products. This list is used to get get the ids of the products and check duplicates
+   # Obtaining the current list of product and the list pass it
    id_list_cache = spreadsheet_price_tracker.worksheet("www.amazon.com.au").col_values(1)
+   new_products_to_add_id_dic = {get_id_from_whole_url_amazon(link): link for link in links}
 
-   # Add each new product to the spreadsheet
-   for product in new_products_to_add:
+   for id, url in new_products_to_add_id_dic.items():
       try:
          # Check that it has not previously added
-         if not product.product_id in id_list_cache:
+         if not id in id_list_cache:
+            product = Product(url)
             worksheet = spreadsheet_price_tracker.worksheet(product.website)
             add_new_product_in_spreedsheet(worksheet, product, current_datetime)
 
       except Exception as e:
          print(f"Failed to add product {product.product_name}: {e}")
 
-   # Clear the file with the links after adding the products
-   # with open('raw_links.txt', 'w'):
-   #    pass
+   #Clear the file with the links after adding the products
+   with open('raw_links.txt', 'w'):
+      pass
 
 if __name__ == "__main__":
     main()
